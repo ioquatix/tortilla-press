@@ -33,6 +33,11 @@ module cylinder_outer(height, radius, fn=$fn, radial_error=$radial_error) {
 	cylinder(h=height,r=radius*fudge+$radial_error, $fn=fn);
 }
 
+module cylinder_middle(height, radius, fn=$fn, radial_error=$radial_error) {
+	fudge = (1+1/cos(180/fn))/2;
+	cylinder(h=height,r=radius*fudge+$radial_error, $fn=fn);
+}
+
 module cylinder_inner(height, radius, fn=$fn) {
 	cylinder(h=height,r=radius-$radial_error,$fn=fn);
 }
@@ -68,13 +73,17 @@ module countersunk_knurled_hole(diameter = 3, depth = 6, inset = 10, insert = 4,
 	knurled_insert(diameter, insert, thickness);
 }
 
+module nut_hole(radius, shaft_width, sides = 6) {
+	cylinder(h=shaft_width,r=radius+$radial_error,$fn=sides);
+}
+
 // Make a hole for a bolt/screw combination.
 module bolted_hole(diameter=3, depth=8, nut_offset=2, shaft_length=10, inset=10) {
 	hole(diameter, depth, inset);
 	hull() {
 		shaft_width = diameter;
-		translate([0, 0, nut_offset]) rotate(360/12, [0, 0, 1]) cylinder_outer(diameter, shaft_width, 6);
-		translate([0, shaft_length, nut_offset]) rotate(360/12, [0, 0, 1]) cylinder_outer(diameter, shaft_width, 6);
+		translate([0, 0, nut_offset]) rotate(360/12, [0, 0, 1]) nut_hole(diameter, shaft_width);
+		translate([0, shaft_length, nut_offset]) rotate(360/12, [0, 0, 1]) nut_hole(diameter, shaft_width);
 	}
 }
 
@@ -82,8 +91,8 @@ module countersunk_bolted_hole(diameter=3, depth=8, nut_offset=2, shaft_length=1
 	countersunk_hole(diameter, depth, inset);
 	hull() {
 		shaft_width = diameter;
-		translate([0, 0, nut_offset]) rotate(360/12, [0, 0, 1]) cylinder_outer(diameter, shaft_width, 6);
-		translate([0, shaft_length, nut_offset]) rotate(360/12, [0, 0, 1]) cylinder_outer(diameter, shaft_width, 6);
+		translate([0, 0, nut_offset]) rotate(360/12, [0, 0, 1]) nut_hole(diameter, shaft_width);
+		translate([0, shaft_length, nut_offset]) rotate(360/12, [0, 0, 1]) nut_hole(diameter, shaft_width);
 	}
 }
 
