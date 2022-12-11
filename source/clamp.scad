@@ -6,7 +6,7 @@ $fn = 10*8;
 
 dimensions = [227, 227, 17];
 gap = 2;
-slip = [1.2, 0.8, 0.8];
+slip = [0.4, 0.4, 0.4];
 
 module blocks() {
 	zcube(dimensions, z=gap);
@@ -29,14 +29,14 @@ module bottom_connector(outset=7, width=40) {
 	}
 }
 
-module bottom_hinge_bolt(outset=7, width=40, depth=35) {
+module bottom_hinge_bolt(outset=7, width=40, depth=36) {
 	offset = (width - depth) / 2 - 2;
 	
 	translate([-offset, -dimensions[1]/2, -dimensions[2]])
 	translate([0, -outset - dimensions[2]/2, dimensions[2] * 1.5 + gap])
 	translate([width/2, 0, 0])
 	rotate([90, 0, -90])
-	bolted_hole(4, depth=depth, nut_offset=0);
+	bolted_hole(4, depth=depth, nut_offset=1);
 }
 
 module bottom_fixed(outset=7, width=40, inset = 10) {
@@ -115,6 +115,10 @@ module bottom_hinge(outset=7, width=40, inset=10) {
 		}
 		
 		bottom_hinge_bolt(outset=outset, width=width);
+		
+		reflect()
+		translate([width/2 - inset/2, -outset - dimensions[1]/2, gap])
+		bolted_hole(3, depth=16, nut_offset=1);
 	}
 }
 
@@ -151,5 +155,4 @@ color("brown")
 //blocks();
 
 bottom_hinge();
-bottom_fixed();
-bottom_hinge_crack_joint();
+//bottom_fixed();
